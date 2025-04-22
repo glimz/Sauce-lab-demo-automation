@@ -45,7 +45,7 @@ This document provides the deliverables for the E2E Testing Challenge. It outlin
 1. Clone this repository:
 
    ```sh
-   git clone https://github.com/glimz/sample-e2e-automation-qr-scanner.git
+   git clone https://github.com/glimz/Sauce-lab-demo-automation.git
    ```
 
 2. Navigate to the project folder:
