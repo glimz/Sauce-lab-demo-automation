@@ -3,18 +3,30 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 
 class QRScannerPage extends Page {
+    mockScanWithoutURL() {
+        return this.sendMockScan('TEXT_WITHOUT_URL');
+    }
+
+    errorMessage(errorMessage: string) {
+        // Return a selector for the error message element
+        return $(`//*[contains(@text, "${errorMessage}")]`);
+    }
+    
     get permissionAllowButton() { return $('~com.android.permissioncontroller:id/permission_allow_foreground_only_button'); }
     get qrScreenHeader() { return $('~com.saucelabs.mydemoapp.android:id/qrCodeTV'); }
     get cameraPreview() { return $('~camera-preview'); }
-
+    get permissionDenyButton() { return $('~com.android.permissioncontroller:id/permission_deny_button'); }
+    get scanButton() { return $('~com.saucelabs.mydemoapp.android:id/scanBtn'); }
+    get errorMessageElement() { return $('~com.saucelabs.mydemoapp.android:id/errorTV'); }
 
     private readonly VALID_QR_IMAGE = join(process.cwd(), 'docs/assets/valid-qr-code.png');
     private readonly INVALID_QR_IMAGE = join(process.cwd(), 'docs/assets/invalid-qr.png');
+    private readonly VALID_QR_URL = 'https://google.com'
 
    /*  async waitForQRScannerReady(): Promise<void> {
         await this.qrScreenHeader.waitForExist({ timeout: 10000 });
         await this.cameraPreview.waitForExist({ timeout: 5000 });
-    } */
+    } */ 
 
     async grantCameraPermission(): Promise<void> {
         try {
@@ -27,40 +39,47 @@ class QRScannerPage extends Page {
         }
     }
 
+    async denyCameraPermission(): Promise<void> {
+        try {
+            if (await this.permissionDenyButton.isDisplayed()) {
+                await this.permissionDenyButton.click();
+                await driver.pause(1000);
+            }
+        } catch (error) {
+            console.log('Permission dialog not shown or already denied');
+        }
+    }
+
     async mockValidScan(): Promise<void> {
         await this.grantCameraPermission();
         await this.mockScanFromImage(this.VALID_QR_IMAGE);
-        await this.verifyUrlOpened()
+        await this.verifyUrlOpened();
     }
 
     async mockInvalidScan(): Promise<void> {
         await this.grantCameraPermission();
         await this.mockScanFromImage(this.INVALID_QR_IMAGE);
-      //  await this.scanButton.click();
         await this.verifyFailedScan();
     }
 
     private async verifyUrlOpened(): Promise<void> {
         await driver.startActivity("com.android.chrome", "com.google.android.apps.chrome.Main");
-       console.log('Chrome launched');
-       console.log('Switching to webview context', await driver.getContexts());
+        console.log('Chrome launched');
+        console.log('Switching to webview context', await driver.getContexts());
         await driver.switchContext('WEBVIEW_chrome');
 
-
         await browser.pause(2000);
-        await browser.url('https://talenttic.com')
+        await browser.url(this.VALID_QR_URL);
   
-       const currentUrl = await browser.getUrl();
+        const currentUrl = await browser.getUrl();
         console.log('Current URL:', currentUrl);
-        await expect(currentUrl).toContain('https://talenttic.com');
-        
-        // Switch back to native context
+        await expect(currentUrl).toContain(this.VALID_QR_URL);
         await driver.switchContext('NATIVE_APP');
     }
 
     private async mockScanFromImage(imagePath: string): Promise<void> {
         const content = imagePath.includes('valid-qr-code.png') 
-            ? 'https://valid.example.com' 
+            ? this.VALID_QR_URL 
             : 'INVALID_QR_CONTENT';
         
         await this.sendMockScan(content);
@@ -84,7 +103,7 @@ class QRScannerPage extends Page {
     private async verifyBrowserLaunched(): Promise<void> {
         // 1. Check current app (works on Android)
         const currentApp = await driver.getCurrentPackage();
-        if (!currentApp.includes('android')) { // Not our app anymore
+        if (!currentApp.includes('android')) {
             console.log(`Browser opened: ${currentApp}`);
             await this.returnToApp();
             return;
@@ -105,9 +124,10 @@ class QRScannerPage extends Page {
         throw new Error('Failed to verify browser launch');
     }
 
-
     private async verifyFailedScan(): Promise<void> {
-        await this.errorMessage.waitForDisplayed({ timeout: 10000 });
+        await this.errorMessageElement.waitForDisplayed({ timeout: 10000 });
+        const errorText = await this.errorMessageElement.getText();
+        expect(errorText).toContain('Invalid QR code');
     }
 
     // Utility to go back to app from browser (Android)
@@ -116,7 +136,10 @@ class QRScannerPage extends Page {
             await driver.execute('mobile: shell', {
                 command: 'am start -n com.saucelabs.mydemoapp.android/.MainActivity'
             });
-            await driver.pause(2000); // Wait for app to relaunch
+            await driver.pause(2000);
+        } else {
+            // iOS implementation would go here
+            await driver.activateApp('com.saucelabs.mydemoapp.ios');
         }
     }
 

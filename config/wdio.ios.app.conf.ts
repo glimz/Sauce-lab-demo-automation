@@ -30,7 +30,7 @@ export const config: WebdriverIO.Config = {
             "appium:deviceName": "iPhone 16 Pro",
             //
             // NOTE: Change this version according to the Simulator Version you have created on your local machine
-            "appium:platformVersion": "18.2",
+            "appium:platformVersion": "18.4",
             "appium:orientation": "PORTRAIT",
             "appium:automationName": "XCUITest",
             // The path to the app
@@ -38,7 +38,7 @@ export const config: WebdriverIO.Config = {
                 process.cwd(),
                 "apps",
                 // Change this name according to the app version you downloaded
-                "ios.simulator.wdio.native.app.v1.0.8.zip"
+                "SauceLabs-Demo-App.Simulator.XCUITest.zip"
             ),
             "appium:newCommandTimeout": 240,
             // This is needed to wait for the webview context to become available

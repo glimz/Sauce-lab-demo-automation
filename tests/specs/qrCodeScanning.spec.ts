@@ -14,33 +14,30 @@ describe('QR Code Scanning', () => {
         await QRScannerPage.mockValidScan();    
     });
  
-
-/*
-it('should show error when camera permission denied', async () => {
+    it('should show error when camera permission denied', async () => {
         await HomePage.navigateToQRScanner();
          await QRScannerPage.denyCameraPermission();
         
         await expect(QRScannerPage.errorMessage).toBeDisplayed();
-        await expect(QRScannerPage.errorMessage).toHaveTextContaining('Camera permission');
-    }); */
+        await expect(QRScannerPage.errorMessage).toHaveText('Camera permission');
+    });
 
-    /* it('should show error for invalid QR code', async () => {
+    it('should show error for invalid QR code', async () => {
         await HomePage.navigateToQRScanner();
         await QRScannerPage.grantCameraPermission();
         await QRScannerPage.mockInvalidScan();
         
         await expect(QRScannerPage.errorMessage).toBeDisplayed();
-        await expect(QRScannerPage.errorMessage).toHaveTextContaining('invalid');
-    }); */
+        await expect(QRScannerPage.errorMessage).toHaveText('invalid');
+    });
 
-    /* it('should show message when QR code has no URL', async () => {
+    it('should show message when QR code has no URL', async () => {
         await HomePage.navigateToQRScanner();
         await QRScannerPage.grantCameraPermission();
         await QRScannerPage.mockScanWithoutURL();
         
         await expect(QRScannerPage.errorMessage).toBeDisplayed();
-        await expect(QRScannerPage.errorMessage).toHaveTextContaining('no URL');
+        await expect(QRScannerPage.errorMessage).toHaveText('no URL');
         }); 
-        */
     })
 

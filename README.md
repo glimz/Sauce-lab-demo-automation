@@ -51,7 +51,7 @@ This document provides the deliverables for the E2E Testing Challenge. It outlin
 2. Navigate to the project folder:
 
    ```sh
-   cd appium-webdriverio-qr-scanner
+   cd sauce-lab-demo-automation
    ```
 
 3. Install dependencies:
@@ -60,7 +60,9 @@ This document provides the deliverables for the E2E Testing Challenge. It outlin
    npm install
    ```
 
-4. Set up the required mobile apps by creating an `apps` directory and downloading the latest app files (`.apk` / `.zip`) from [here](https://github.com/webdriverio/native-demo-app/releases).
+4. Set up the required mobile apps by creating an `apps` directory and downloading the latest app files (`.apk` / `.zip`) from [here ios](https://github.com/saucelabs/my-demo-app-ios).
+
+[android](https://github.com/saucelabs/my-demo-app-android)
 
 5. Update the configuration files in `config/` for the devices and emulators you have set up locally:
    - [`wdio.android.app.conf.ts`](./config/wdio.android.app.conf.ts)
