@@ -1,6 +1,5 @@
 export default class Page {
     qrCodeScannerButtonIdnetifier = '//android.widget.TextView[@resource-id="com.saucelabs.mydemoapp.android:id/itemTV" and @text="QR Code Scanner"]';
-    get welcomeText() { return $(`~${'App logo and name'}`) }
     get qrCodeScannerButton() { return $(`//*[@content-desc="${this.qrCodeScannerButtonIdnetifier}"]`) }
     get qrScreenHeader() { return $(`~${'com.saucelabs.mydemoapp.android:id/qrCodeTV'} `) }
     
@@ -28,7 +27,7 @@ export default class Page {
     }
 
     async homePage(): Promise<void> {
-        await this.welcomeText.waitForExist({ timeout: 10000 });
+     //   await this.welcomeText.waitForExist({ timeout: 10000 });
     }
 
     

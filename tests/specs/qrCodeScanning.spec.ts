@@ -38,6 +38,6 @@ describe('QR Code Scanning', () => {
         
         await expect(QRScannerPage.errorMessage).toBeDisplayed();
         await expect(QRScannerPage.errorMessage).toHaveText('no URL');
-        }); 
+        });
     })
 
